@@ -103,8 +103,13 @@
     <button class="menu-btn" onclick="showTool('credit')">
         <i class="fas fa-calculator"></i><span>Mensualités</span>
     </button>
+
     <button class="menu-btn" onclick="showTool('capacite')">
         <i class="fas fa-piggy-bank"></i><span>Mon Budget</span>
+    </button>
+
+    <button class="menu-btn" onclick="showTool('comparatif')">
+        <i class="fas fa-euro-sign" style="color: #673ab7;"></i><span>Acheter ou Louer ?</span>
     </button>
     
     <a href="https://wa.me/33620786323?text=Bonjour,%20je%20souhaite%20un%20accompagnement%20personnalisé." 
@@ -145,9 +150,6 @@
        class="action-btn gold" style="border-radius: 10px; margin-top: 25px; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);">
         Lancer mon analyse gratuite
     </a>
-    <p style="text-align: center; font-size: 0.7rem; color: #bdc3c7; margin-top: 15px; font-weight: 400;">
-        Réponse sous 24h • Service 100% confidentiel
-    </p>
 </div>
 
 <div id="estimation" class="tool-section">
@@ -167,9 +169,6 @@
     <label>Charges annuelles (€)</label>
     <input type="number" id="renta-charges" placeholder="Ex: 1500" oninput="calcRenta()">
     <div id="res-renta" class="result" style="display:none"></div>
-    <p style="font-size: 0.75rem; color: #7f8c8d; margin-top: 15px; font-style: italic;">
-        *Note : Le calcul inclut les frais de notaire estimés à 8%.
-    </p>
 </div>
 
 <div id="notaire" class="tool-section">
@@ -197,18 +196,30 @@
 <div id="capacite" class="tool-section">
     <button class="back-btn" onclick="showHome()"><i class="fas fa-arrow-left"></i> Retour</button>
     <h2>Capacité d'achat</h2>
-    <div style="background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 0.85rem; color: #555; line-height: 1.4;">
-        <strong>Le calcul d'expert :</strong> Ce simulateur applique la règle du <strong>HCSF</strong> : votre mensualité ne peut pas dépasser <strong>35% de vos revenus nets</strong> (assurance comprise). 
-    </div>
     <label>Revenus nets mensuels du foyer (€)</label>
     <input type="number" id="revenus" placeholder="Ex: 3500">
     <label>Crédits ou charges actuels (€)</label>
     <input type="number" id="charges" placeholder="Ex: 400">
     <button class="action-btn" onclick="calcCapacite()">Estimer mon budget d'achat</button>
     <div id="res-capacite" class="result" style="display:none"></div>
-    <p style="font-size: 0.75rem; color: #7f8c8d; margin-top: 15px; font-style: italic;">
-        *Note : Cette estimation se base sur un prêt moyen sur 25 ans. Votre apport personnel viendra s'ajouter à ce montant.
-    </p>
+</div>
+
+<div id="comparatif" class="tool-section">
+    <button class="back-btn" onclick="showHome()"><i class="fas fa-arrow-left"></i> Retour</button>
+    <h2>Acheter ou Louer ?</h2>
+    <div style="background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 0.8rem; color: #555; line-height: 1.4;">
+        <strong>Le calcul :</strong> On compare le cumul de vos loyers face aux frais d'achat (notaire + intérêts bancaires). Le capital remboursé à la banque reste à vous, c'est votre épargne !
+    </div>
+    
+    <label>Loyer mensuel actuel (€)</label>
+    <input type="number" id="comp-loyer" placeholder="Ex: 800">
+    <label>Prix du bien visé (€)</label>
+    <input type="number" id="comp-prix" placeholder="Ex: 200000">
+    <label>Durée de comparaison (ans)</label>
+    <input type="number" id="comp-duree" value="10">
+    
+    <button class="action-btn" onclick="calcComparatif()" style="background: #673ab7;">Comparer</button>
+    <div id="res-comparatif" class="result" style="display:none"></div>
 </div>
 
 <footer>
@@ -286,6 +297,29 @@
             const div = document.getElementById('res-capacite');
             div.style.display = 'block';
             div.innerHTML = "Budget d'achat estimé : <br><span style='font-size:1.4rem; color:var(--accent);'>~ " + Math.round(budget).toLocaleString() + " €</span>";
+        }
+    }
+
+    function calcComparatif() {
+        const loyer = parseFloat(document.getElementById('comp-loyer').value) || 0;
+        const prix = parseFloat(document.getElementById('comp-prix').value) || 0;
+        const annees = parseFloat(document.getElementById('comp-duree').value) || 10;
+        
+        if(loyer > 0 && prix > 0) {
+            const totalLoyers = loyer * 12 * annees;
+            const fraisNotaire = prix * 0.08;
+            const estimationInterets = (prix * 0.04) * (annees / 2);
+            const coutAchat = fraisNotaire + estimationInterets;
+            
+            const div = document.getElementById('res-comparatif');
+            div.style.display = 'block';
+            
+            if(totalLoyers > coutAchat) {
+                const gain = totalLoyers - coutAchat;
+                div.innerHTML = "En " + annees + " ans, l'achat est gagnant !<br><br>Loyers perdus : <span style='color:#e74c3c;'>" + Math.round(totalLoyers).toLocaleString() + " €</span><br>Argent gagné en achetant : <span style='color:#27ae60;'>" + Math.round(gain).toLocaleString() + " €</span>";
+            } else {
+                div.innerHTML = "Sur une durée si courte, les frais d'achat ne sont pas encore amortis face aux loyers.<br><br>Loyers cumulés : " + Math.round(totalLoyers).toLocaleString() + " €<br>Coût notaire + intérêts : " + Math.round(coutAchat).toLocaleString() + " €";
+            }
         }
     }
 </script>
