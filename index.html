@@ -53,6 +53,11 @@
         .type-selector { display: flex; gap: 10px; margin-bottom: 15px; }
         .type-btn { flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #ddd; background: white; font-weight: bold; cursor: pointer; }
         .type-btn.active { border-color: var(--accent); color: var(--accent); }
+
+        /* Style spécifique pour le Diagnostic Vie */
+        .diag-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .diag-item { background: #f8f9fa; padding: 10px; border-radius: 8px; text-align: center; text-decoration: none; color: var(--primary); border: 1px solid #eee; font-size: 0.75rem; font-weight: bold; }
+        .diag-item i { display: block; font-size: 1.2rem; margin-bottom: 5px; color: var(--accent); }
     </style>
 </head>
 <body onload="initDate()">
@@ -111,11 +116,29 @@
     <button class="menu-btn" onclick="showTool('comparatif')">
         <i class="fas fa-euro-sign" style="color: #673ab7;"></i><span>Acheter ou Louer ?</span>
     </button>
+
+    <button class="menu-btn" onclick="showTool('diag-vie')" style="grid-column: span 2; margin-top: 5px; border: 1px solid #3498db;">
+        <i class="fas fa-map-marked-alt" style="color: #3498db;"></i><span>Diagnostic de Vie du Quartier</span>
+    </button>
     
     <a href="https://wa.me/33620786323?text=Bonjour,%20je%20souhaite%20un%20accompagnement%20personnalisé." 
        class="menu-btn" style="grid-column: span 2; background: #25D366; color: white; margin-top: 10px;">
         <i class="fab fa-whatsapp" style="color: white;"></i><span>Me contacter sur WhatsApp</span>
     </a>
+</div>
+
+<div id="diag-vie" class="tool-section">
+    <button class="back-btn" onclick="showHome()"><i class="fas fa-arrow-left"></i> Retour</button>
+    <h2>Diagnostic de Vie</h2>
+    <p style="font-size: 0.85rem; color: #555;">Tapez une adresse pour découvrir l'environnement du bien.</p>
+    <input type="text" id="adresse-diag" placeholder="Ex: 10 rue de la Paix, Paris" oninput="updateDiagLinks()">
+    <div id="diag-options" class="diag-grid" style="display:none;">
+        <a id="link-ecoles" href="#" target="_blank" class="diag-item"><i class="fas fa-graduation-cap"></i>Écoles</a>
+        <a id="link-commerces" href="#" target="_blank" class="diag-item"><i class="fas fa-shopping-basket"></i>Commerces</a>
+        <a id="link-transports" href="#" target="_blank" class="diag-item"><i class="fas fa-bus"></i>Transports</a>
+        <a id="link-sante" href="#" target="_blank" class="diag-item"><i class="fas fa-hospital"></i>Santé</a>
+    </div>
+    <p id="diag-hint" style="text-align: center; font-size: 0.75rem; color: #95a5a6; margin-top: 15px;">Entrez une adresse pour activer les liens.</p>
 </div>
 
 <div id="verif-prix" class="tool-section">
@@ -125,12 +148,8 @@
         <div style="width: 40px; height: 2px; background: var(--premium); margin: 0 auto;"></div>
     </div>
     <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #f0f0f0;">
-        <p style="margin-top:0; font-size: 1rem; color: var(--primary); font-weight: 600; line-height: 1.4; text-align: center;">
-            Ne payez pas plus que la valeur réelle du bien.
-        </p>
-        <p style="font-size: 0.9rem; line-height: 1.5; color: #7f8c8d; text-align: center; margin-bottom: 25px;">
-            Aujourd'hui, de nombreux biens sont surévalués. Je sécurise votre achat en analysant le prix pour vous.
-        </p>
+        <p style="margin-top:0; font-size: 1rem; color: var(--primary); font-weight: 600; line-height: 1.4; text-align: center;">Ne payez pas plus que la valeur réelle du bien.</p>
+        <p style="font-size: 0.9rem; line-height: 1.5; color: #7f8c8d; text-align: center; margin-bottom: 25px;">Aujourd'hui, de nombreux biens sont surévalués. Je sécurise votre achat en analysant le prix pour vous.</p>
         <div style="display: flex; flex-direction: column; gap: 15px;">
             <div style="display: flex; align-items: flex-start; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid #f9f9f9;">
                 <i class="fas fa-search-dollar" style="color: var(--premium); margin-top: 3px;"></i>
@@ -147,9 +166,7 @@
         </div>
     </div>
     <a href="https://wa.me/33620786323?text=Bonjour%20Robin,%20je%20souhaite%20profiter%20du%20service%20Check-Prix%20pour%20un%20bien%20qui%20m'intéresse%20:" 
-       class="action-btn gold" style="border-radius: 10px; margin-top: 25px; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);">
-        Lancer mon analyse gratuite
-    </a>
+       class="action-btn gold" style="border-radius: 10px; margin-top: 25px; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);">Lancer mon analyse gratuite</a>
 </div>
 
 <div id="estimation" class="tool-section">
@@ -210,14 +227,12 @@
     <div style="background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 0.8rem; color: #555; line-height: 1.4;">
         <strong>Le calcul :</strong> On compare le cumul de vos loyers face aux frais d'achat (notaire + intérêts bancaires). Le capital remboursé à la banque reste à vous, c'est votre épargne !
     </div>
-    
     <label>Loyer mensuel actuel (€)</label>
     <input type="number" id="comp-loyer" placeholder="Ex: 800">
     <label>Prix du bien visé (€)</label>
     <input type="number" id="comp-prix" placeholder="Ex: 200000">
     <label>Durée de comparaison (ans)</label>
     <input type="number" id="comp-duree" value="10">
-    
     <button class="action-btn" onclick="calcComparatif()" style="background: #673ab7;">Comparer</button>
     <div id="res-comparatif" class="result" style="display:none"></div>
 </div>
@@ -242,6 +257,24 @@
     function showHome() {
         document.getElementById('home-menu').style.display = 'grid';
         document.querySelectorAll('.tool-section').forEach(s => s.style.display = 'none');
+    }
+
+    function updateDiagLinks() {
+        const addr = document.getElementById('adresse-diag').value;
+        const options = document.getElementById('diag-options');
+        const hint = document.getElementById('diag-hint');
+        if(addr.length > 5) {
+            options.style.display = 'grid';
+            hint.style.display = 'none';
+            const encoded = encodeURIComponent(addr);
+            document.getElementById('link-ecoles').href = "https://www.google.com/maps/search/écoles+proches+" + encoded;
+            document.getElementById('link-commerces').href = "https://www.google.com/maps/search/commerces+proches+" + encoded;
+            document.getElementById('link-transports').href = "https://www.google.com/maps/search/transports+proches+" + encoded;
+            document.getElementById('link-sante').href = "https://www.google.com/maps/search/médecins+proches+" + encoded;
+        } else {
+            options.style.display = 'none';
+            hint.style.display = 'block';
+        }
     }
 
     function setType(type) {
@@ -304,16 +337,13 @@
         const loyer = parseFloat(document.getElementById('comp-loyer').value) || 0;
         const prix = parseFloat(document.getElementById('comp-prix').value) || 0;
         const annees = parseFloat(document.getElementById('comp-duree').value) || 10;
-        
         if(loyer > 0 && prix > 0) {
             const totalLoyers = loyer * 12 * annees;
             const fraisNotaire = prix * 0.08;
             const estimationInterets = (prix * 0.04) * (annees / 2);
             const coutAchat = fraisNotaire + estimationInterets;
-            
             const div = document.getElementById('res-comparatif');
             div.style.display = 'block';
-            
             if(totalLoyers > coutAchat) {
                 const gain = totalLoyers - coutAchat;
                 div.innerHTML = "En " + annees + " ans, l'achat est gagnant !<br><br>Loyers perdus : <span style='color:#e74c3c;'>" + Math.round(totalLoyers).toLocaleString() + " €</span><br>Argent gagné en achetant : <span style='color:#27ae60;'>" + Math.round(gain).toLocaleString() + " €</span>";
