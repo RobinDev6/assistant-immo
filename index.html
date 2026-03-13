@@ -35,6 +35,8 @@
         .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 15px; max-width: 500px; margin: 0 auto; }
         .menu-btn { background: white; border: none; padding: 18px 10px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: 0.2s; color: var(--primary); text-decoration: none; box-sizing: border-box; }
         .menu-btn i { font-size: 1.6rem; color: var(--accent); margin-bottom: 8px; }
+        /* Style pour l'image du logo notaire */
+        .menu-btn img { width: 30px; height: 30px; margin-bottom: 8px; object-fit: contain; }
         .menu-btn span { font-size: 0.8rem; font-weight: 600; text-align: center; }
 
         .tool-section { display: none; max-width: 500px; margin: 20px auto; padding: 20px; background: white; border-radius: 15px; box-sizing: border-box; border-top: 5px solid var(--accent); }
@@ -89,9 +91,16 @@
     <button class="menu-btn" onclick="showTool('estimation')">
         <i class="fas fa-home"></i><span>Avis de Valeur (Vendeur)</span>
     </button>
-    <button class="menu-btn" onclick="showTool('notaire')">
-        <i class="fas fa-gavel"></i><span>Frais de Notaire</span>
+
+    <button class="menu-btn" onclick="showTool('renta')">
+        <i class="fas fa-chart-line" style="color: #27ae60;"></i><span>Rendement Net</span>
     </button>
+
+    <button class="menu-btn" onclick="showTool('notaire')">
+        <img src="https://www.notaires.fr/themes/custom/notaires/logo.svg" alt="Notaire">
+        <span>Frais de Notaire</span>
+    </button>
+
     <button class="menu-btn" onclick="showTool('credit')">
         <i class="fas fa-calculator"></i><span>Mensualités</span>
     </button>
@@ -107,44 +116,36 @@
 
 <div id="verif-prix" class="tool-section">
     <button class="back-btn" onclick="showHome()"><i class="fas fa-arrow-left"></i> Retour</button>
-    
     <div style="text-align: center; margin-bottom: 25px;">
         <h2 style="color: var(--primary); font-size: 1.2rem; font-weight: 800; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px;">Service Check-Prix</h2>
         <div style="width: 40px; height: 2px; background: var(--premium); margin: 0 auto;"></div>
     </div>
-
     <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #f0f0f0;">
         <p style="margin-top:0; font-size: 1rem; color: var(--primary); font-weight: 600; line-height: 1.4; text-align: center;">
             Ne payez pas plus que la valeur réelle du bien.
         </p>
-        
         <p style="font-size: 0.9rem; line-height: 1.5; color: #7f8c8d; text-align: center; margin-bottom: 25px;">
             Aujourd'hui, de nombreux biens sont surévalués. Je sécurise votre achat en analysant le prix pour vous.
         </p>
-
         <div style="display: flex; flex-direction: column; gap: 15px;">
             <div style="display: flex; align-items: flex-start; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid #f9f9f9;">
                 <i class="fas fa-search-dollar" style="color: var(--premium); margin-top: 3px;"></i>
                 <span style="font-size: 0.85rem; color: #444;"><strong>Analyse de l'annonce :</strong> Je vérifie la cohérence du prix affiché.</span>
             </div>
-            
             <div style="display: flex; align-items: flex-start; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid #f9f9f9;">
                 <i class="fas fa-map-marker-alt" style="color: var(--premium); margin-top: 3px;"></i>
                 <span style="font-size: 0.85rem; color: #444;"><strong>Données de secteur :</strong> Comparaison avec les ventes réelles du quartier.</span>
             </div>
-
             <div style="display: flex; align-items: flex-start; gap: 12px;">
                 <i class="fas fa-shield-alt" style="color: var(--premium); margin-top: 3px;"></i>
                 <span style="font-size: 0.85rem; color: #444;"><strong>Sérénité :</strong> Un avis objectif pour une négociation réussie.</span>
             </div>
         </div>
     </div>
-    
     <a href="https://wa.me/33620786323?text=Bonjour%20Robin,%20je%20souhaite%20profiter%20du%20service%20Check-Prix%20pour%20un%20bien%20qui%20m'intéresse%20:" 
        class="action-btn gold" style="border-radius: 10px; margin-top: 25px; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);">
         Lancer mon analyse gratuite
     </a>
-    
     <p style="text-align: center; font-size: 0.7rem; color: #bdc3c7; margin-top: 15px; font-weight: 400;">
         Réponse sous 24h • Service 100% confidentiel
     </p>
@@ -155,6 +156,21 @@
     <h2>Avis de Valeur (Vendeur)</h2>
     <p>Étude de marché personnalisée sous 48h pour connaître la valeur réelle de votre bien. Service offert et sans engagement.</p>
     <a href="https://wa.me/33620786323?text=Bonjour,%20je%20souhaite%20un%20avis%20de%20valeur%20pour%20mon%20bien." class="action-btn">Prendre RDV WhatsApp</a>
+</div>
+
+<div id="renta" class="tool-section">
+    <button class="back-btn" onclick="showHome()"><i class="fas fa-arrow-left"></i> Retour</button>
+    <h2>Simulateur de Rendement Net</h2>
+    <label>Prix d'achat net vendeur (€)</label>
+    <input type="number" id="renta-prix" placeholder="Ex: 150000" oninput="calcRenta()">
+    <label>Loyer mensuel hors charges (€)</label>
+    <input type="number" id="renta-loyer" placeholder="Ex: 800" oninput="calcRenta()">
+    <label>Charges annuelles (€)</label>
+    <input type="number" id="renta-charges" placeholder="Ex: 1500" oninput="calcRenta()">
+    <div id="res-renta" class="result" style="display:none"></div>
+    <p style="font-size: 0.75rem; color: #7f8c8d; margin-top: 15px; font-style: italic;">
+        *Note : Le calcul inclut les frais de notaire estimés à 8%.
+    </p>
 </div>
 
 <div id="notaire" class="tool-section">
@@ -204,10 +220,7 @@
 
 <script>
     let currentType = 'ancien';
-
-    function initDate() {
-        // Initialisation si besoin
-    }
+    function initDate() {}
 
     function showTool(id) {
         document.getElementById('home-menu').style.display = 'none';
@@ -236,6 +249,21 @@
             const div = document.getElementById('res-notaire');
             div.style.display = 'block';
             div.innerHTML = "Frais de notaire (" + currentType + ") : <br><span style='font-size:1.4rem; color:var(--accent);'>" + Math.round(res).toLocaleString() + " €</span>";
+        }
+    }
+
+    // FONCTION RENDEMENT
+    function calcRenta() {
+        const prix = parseFloat(document.getElementById('renta-prix').value) || 0;
+        const loyer = parseFloat(document.getElementById('renta-loyer').value) || 0;
+        const charges = parseFloat(document.getElementById('renta-charges').value) || 0;
+        if(prix > 0 && loyer > 0) {
+            const investissementTotal = prix * 1.08;
+            const revenuAnnuel = (loyer * 12) - charges;
+            const rendement = (revenuAnnuel / investissementTotal) * 100;
+            const div = document.getElementById('res-renta');
+            div.style.display = 'block';
+            div.innerHTML = "Rendement Net estimé : <br><span style='font-size:1.4rem; color:#27ae60;'>" + rendement.toFixed(2) + " %</span>";
         }
     }
 
